@@ -1,28 +1,20 @@
 "use client";
 
 import * as React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 function safeNextPath(next: string | null): string {
-  // Default landing page after login
   if (!next) return "/dashboard";
-
-  // Only allow internal paths to prevent weird redirects
   if (!next.startsWith("/")) return "/dashboard";
-
-  // Never redirect back to /access (would cause a loop)
-  if (next === "/access" || next.startsWith("/access?")) return "/dashboard";
-
+  if (next === "/access" || next.startsWith("/access")) return "/dashboard";
   return next;
 }
 
 export default function AccessClient() {
-  const router = useRouter();
   const sp = useSearchParams();
-
   const next = safeNextPath(sp.get("next"));
 
   const [code, setCode] = React.useState("");
@@ -46,7 +38,8 @@ export default function AccessClient() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ code: trimmed }),
-        credentials: "include", // ✅ allow Set-Cookie to persist
+        credentials: "include",
+        cache: "no-store",
       });
 
       const data = await r.json().catch(() => ({}));
@@ -55,9 +48,8 @@ export default function AccessClient() {
         return;
       }
 
-      // ✅ Move into the app and refresh so middleware sees cookie immediately
-      router.replace(next);
-      router.refresh();
+      // ✅ Most reliable: full navigation so cookie is definitely applied
+      window.location.assign(next);
     } catch {
       setErr("Something went wrong. Try again.");
     } finally {
