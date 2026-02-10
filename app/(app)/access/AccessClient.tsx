@@ -6,10 +6,24 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+function safeNextPath(next: string | null): string {
+  // Default landing page after login
+  if (!next) return "/dashboard";
+
+  // Only allow internal paths to prevent weird redirects
+  if (!next.startsWith("/")) return "/dashboard";
+
+  // Never redirect back to /access (would cause a loop)
+  if (next === "/access" || next.startsWith("/access?")) return "/dashboard";
+
+  return next;
+}
+
 export default function AccessClient() {
   const router = useRouter();
   const sp = useSearchParams();
-  const next = sp.get("next") || "/";
+
+  const next = safeNextPath(sp.get("next"));
 
   const [code, setCode] = React.useState("");
   const [err, setErr] = React.useState<string | null>(null);
@@ -18,13 +32,21 @@ export default function AccessClient() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErr(null);
+
+    const trimmed = code.trim();
+    if (!trimmed) {
+      setErr("Please enter the access code.");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const r = await fetch("/api/access", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code: trimmed }),
+        credentials: "include", // ✅ allow Set-Cookie to persist
       });
 
       const data = await r.json().catch(() => ({}));
@@ -33,7 +55,9 @@ export default function AccessClient() {
         return;
       }
 
+      // ✅ Move into the app and refresh so middleware sees cookie immediately
       router.replace(next);
+      router.refresh();
     } catch {
       setErr("Something went wrong. Try again.");
     } finally {
