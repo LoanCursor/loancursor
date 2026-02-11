@@ -13,6 +13,7 @@ export function defaultScenario(): Scenario {
 
     rentMonthly: 4500,
     propertyTaxAnnual: 7200,
+    hoiAnnual: 0,
     hoaMonthly: 0,
 
     qualifyingRate: 8.25,

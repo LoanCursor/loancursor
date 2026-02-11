@@ -1,13 +1,5 @@
-# Next.js
-.next/
-out/
-
-# deps
-node_modules/
-
-# env
-.env*.local
+node_modules
+.next
+.env.local
 .env
-
-# misc
 .DS_Store

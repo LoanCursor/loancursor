@@ -19,6 +19,7 @@ export type Scenario = {
 
   rentMonthly: number;
   propertyTaxAnnual: number;
+  hoiAnnual: number; // Homeowners insurance per year
   hoaMonthly: number;
 
   qualifyingRate: number; // percent, e.g. 8.25
