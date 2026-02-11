@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 
 const nav = [
-  { name: "Scenario", href: "/scenario", icon: ClipboardList },
-  { name: "Results", href: "/results", icon: LayoutDashboard },
+  { name: "Pricing", href: "/pricing", icon: ClipboardList }, // ✅ fixed case
+  // { name: "Results", href: "/results", icon: LayoutDashboard }, // (optional) remove later for split-screen
   { name: "Lenders", href: "/lenders", icon: Users },
   { name: "Admin", href: "/admin", icon: FileText },
   { name: "Settings", href: "/settings", icon: Settings },
@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         )}
       >
         <div className="h-16 flex items-center justify-between px-6 border-b border-border">
-          <Link href="/scenario" className="flex items-center gap-2">
+          <Link href="/pricing" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-md bg-gradient-to-br from-indigo-600 to-indigo-700 flex items-center justify-center shadow-lg">
               <Landmark className="w-4 h-4 text-white" />
             </div>
@@ -63,7 +63,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <nav className="p-4 space-y-1">
           {nav.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(item.href + "/");
+            const active =
+              pathname === item.href || pathname.startsWith(item.href + "/");
             const Icon = item.icon;
             return (
               <Link
@@ -77,7 +78,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 )}
                 onClick={() => setOpen(false)}
               >
-                <Icon className={cn("w-4 h-4", active ? "text-sidebar-accent-foreground" : "text-muted-foreground")} />
+                <Icon
+                  className={cn(
+                    "w-4 h-4",
+                    active
+                      ? "text-sidebar-accent-foreground"
+                      : "text-muted-foreground"
+                  )}
+                />
                 {item.name}
               </Link>
             );
@@ -88,7 +96,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="rounded-md border border-border bg-muted/30 p-4">
             <div className="text-xs text-muted-foreground">Workspace</div>
             <div className="mt-1 text-sm font-medium">Pipeline → Docs → Close</div>
-            <div className="mt-2 text-xs text-muted-foreground">Mock UI now • Plug in Supabase when ready.</div>
+            <div className="mt-2 text-xs text-muted-foreground">
+              Mock UI now • Plug in Supabase when ready.
+            </div>
           </div>
         </div>
       </aside>
@@ -104,7 +114,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               <Menu className="w-4 h-4" />
             </Button>
-            <div className="text-sm text-muted-foreground">Loan origination workspace</div>
+            <div className="text-sm text-muted-foreground">
+              Loan origination workspace
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <div className="text-xs text-muted-foreground">Local • Dev</div>

@@ -6,12 +6,15 @@ const COOKIE_NAME = "lc_access";
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Allow access page, API routes, and Next assets
+  // Allow access page + API + Next internals + public files
   if (
     pathname === "/access" ||
     pathname.startsWith("/api/") ||
     pathname.startsWith("/_next/") ||
-    pathname === "/favicon.ico"
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/robots.txt") ||
+    pathname.startsWith("/sitemap") ||
+    pathname.match(/\.(png|jpg|jpeg|gif|webp|svg|ico|txt|xml)$/)
   ) {
     return NextResponse.next();
   }
@@ -26,5 +29,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
